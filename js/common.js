@@ -1,3 +1,4 @@
+
 // 上面这个代码处理过度动画（默认加上不用管）
 document.addEventListener('DOMContentLoaded', () => {
   setTimeout(() => {
@@ -6,6 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }, 200)
 })
 
+
+// 配置 axios 基地址
+axios.defaults.baseURL = 'http://ajax-api.itheima.net'
 
 // 请提示封装函数
 const toastBox = document.querySelector('#myToast')
