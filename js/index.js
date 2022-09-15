@@ -457,5 +457,3 @@ function initMapChart(provinceData) {
     }
     myEchart.setOption(option)
 }
-
-// nn
