@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', async function () {
     initGroupChart(data.groupData)
 
     initGenderChart(data.salaryData)
+
+    initMapChart(data.provinceData)
 })
 
 function initYearChart(year) {
@@ -170,63 +172,63 @@ function initGenderChart(val) {
             {
                 text: '男女薪资分布',
                 left: 'center',
-                top:25
-           },
+                top: 25
+            },
             {
                 text: '男生',
                 left: 'center',
                 top: '50%'
-           },
+            },
             {
                 text: '女生',
                 left: 'center',
-                top:'90%'
-           },
+                top: '90%'
+            },
         ],
         tooltip: {
-          trigger: 'item'
+            trigger: 'item'
         },
         series: [
-          {
-            name: '男生',
-            type: 'pie',
-            radius: ['20%','30%'],
-            center:['50%','35%'],
-            data: val.map(itme => {
-                return {
-                    value: itme.g_count,
-                    name:itme.label
+            {
+                name: '男生',
+                type: 'pie',
+                radius: ['20%', '30%'],
+                center: ['50%', '35%'],
+                data: val.map(itme => {
+                    return {
+                        value: itme.g_count,
+                        name: itme.label
+                    }
+                }),
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'aqua'
+                    }
                 }
-            }),
-            emphasis: {
-              itemStyle: {
-                shadowBlur: 10,
-                shadowOffsetX: 0,
-                shadowColor: 'aqua'
-              }
-            }
-          },
-          {
-            name: '女生',
-            type: 'pie',
-            radius: ['20%','30%'],
-            center:['50%','75%'],
-            data: val.map(itme => {
-                return {
-                    value: itme.b_count,
-                    name:itme.label
+            },
+            {
+                name: '女生',
+                type: 'pie',
+                radius: ['20%', '30%'],
+                center: ['50%', '75%'],
+                data: val.map(itme => {
+                    return {
+                        value: itme.b_count,
+                        name: itme.label
+                    }
+                }),
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'red'
+                    }
                 }
-            }),
-            emphasis: {
-              itemStyle: {
-                shadowBlur: 10,
-                shadowOffsetX: 0,
-                shadowColor: 'red'
-              }
             }
-          }
         ]
-      }
+    }
 
     myChart.setOption(option)
 }
@@ -337,3 +339,122 @@ function initGroupChart(data) {
         }
     })
 }
+
+function initMapChart(provinceData) {
+    const myEchart = echarts.init(document.querySelector('#map'))
+    const dataList = [
+        { name: '南海诸岛', value: 0 },
+        { name: '北京', value: 0 },
+        { name: '天津', value: 0 },
+        { name: '上海', value: 0 },
+        { name: '重庆', value: 0 },
+        { name: '河北', value: 0 },
+        { name: '河南', value: 0 },
+        { name: '云南', value: 0 },
+        { name: '辽宁', value: 0 },
+        { name: '黑龙江', value: 0 },
+        { name: '湖南', value: 0 },
+        { name: '安徽', value: 0 },
+        { name: '山东', value: 0 },
+        { name: '新疆', value: 0 },
+        { name: '江苏', value: 0 },
+        { name: '浙江', value: 0 },
+        { name: '江西', value: 0 },
+        { name: '湖北', value: 0 },
+        { name: '广西', value: 0 },
+        { name: '甘肃', value: 0 },
+        { name: '山西', value: 0 },
+        { name: '内蒙古', value: 0 },
+        { name: '陕西', value: 0 },
+        { name: '吉林', value: 0 },
+        { name: '福建', value: 0 },
+        { name: '贵州', value: 0 },
+        { name: '广东', value: 0 },
+        { name: '青海', value: 0 },
+        { name: '西藏', value: 0 },
+        { name: '四川', value: 0 },
+        { name: '宁夏', value: 0 },
+        { name: '海南', value: 0 },
+        { name: '台湾', value: 0 },
+        { name: '香港', value: 0 },
+        { name: '澳门', value: 0 },
+    ]
+    
+    dataList.forEach(itme => {
+       let sre = provinceData.find(val => {
+            return val.name.replace(/省|回族自治区|吾尔自治区|壮族自治区|特别行政区|自治区/g, '') === itme.name
+        })
+       if(sre){
+         itme.value = sre.value
+       }
+       
+    })
+
+    let option = {
+        title: {
+            text: '籍贯分布',
+            top: 25,
+            left: 10,
+            textStyle: {
+                fontSize: 16,
+            },
+        },
+        tooltip: {
+            trigger: 'item',
+            formatter: '{b}: {c} 位学员',
+            borderColor: 'transparent',
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            textStyle: {
+                color: '#fff',
+            },
+        },
+        visualMap: {
+            min: 0,
+            max: 6,
+            left: 'left',
+            bottom: '20',
+            text: ['6', '0'],
+            inRange: {
+                color: ['#ffffff', '#0075F0'],
+            },
+            show: true,
+            left: 40,
+        },
+        geo: {
+            map: 'china',
+            roam: false,
+            zoom: 1.0,
+            label: {
+                normal: {
+                    show: true,
+                    fontSize: '10',
+                    color: 'rgba(0,0,0,0.7)',
+                },
+            },
+            itemStyle: {
+                normal: {
+                    borderColor: 'rgba(0, 0, 0, 0.2)',
+                    color: '#e0ffff',
+                },
+                emphasis: {
+                    areaColor: '#34D39A',
+                    shadowOffsetX: 0,
+                    shadowOffsetY: 0,
+                    shadowBlur: 20,
+                    borderWidth: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)',
+                },
+            },
+        },
+        series: [
+            {
+                name: '籍贯分布',
+                type: 'map',
+                geoIndex: 0,
+                data: dataList,
+            },
+        ],
+    }
+    myEchart.setOption(option)
+}
+
