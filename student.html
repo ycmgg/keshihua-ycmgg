@@ -319,6 +319,46 @@
           console.log(err)
         }
       }
+
+      if (btn.classList.contains('bi-pen')) {
+        modalBox.dataset.id = btn.dataset.id
+        title.innerHTML = '修改学生'
+
+        let { data } = await axios.get(`/students/${modalBox.dataset.id}`)
+        let fromval = Array.from(document.querySelectorAll('#form [name]'))
+        fromval.forEach(val => {
+          if (val.name === 'gender') {
+            if (+val.value === data.gender) {
+              val.checked = true
+            }
+
+          } else {
+            val.value = data[val.name]
+          }
+        })
+
+        let { data: res } = await axios.get('/api/city', {
+          params: {
+            pname: data.province
+          }
+        })
+        city.innerHTML = `<option value="">--城市--</option>${res.map(val => `<option value="${val}">${val}</option>`).join('')}`
+        city.value = data.city
+
+
+        let { data: arr } = await axios.get('/api/area', {
+          params: {
+            pname: province.value,
+            cname: city.value
+          }
+        })
+        area.innerHTML = `<option value="">--地区--</option>${arr.map(val => `<option value="${val}">${val}</option>`).join('')}`
+        area.value = data.area
+
+        modal.show()
+      }
+
+
     })
 
     const modalBox = document.getElementById('modal')
@@ -345,44 +385,46 @@
 
         province.addEventListener('change', async function () {
           area.value = ''
-          let { data: res } = await axios.get('/api/city',{
-            params:{
-              pname:province.value
+          let { data: res } = await axios.get('/api/city', {
+            params: {
+              pname: province.value
             }
           })
           city.innerHTML = `<option value="">--城市--</option>${res.map(val => `<option value="${val}">${val}</option>`).join('')}`
         })
-        
+
         city.addEventListener('change', async function () {
-          let { data: res } = await axios.get('/api/area',{
-            params:{
-              pname:province.value,
-              cname:city.value
+          let { data: res } = await axios.get('/api/area', {
+            params: {
+              pname: province.value,
+              cname: city.value
             }
           })
           area.innerHTML = `<option value="">--地区--</option>${res.map(val => `<option value="${val}">${val}</option>`).join('')}`
         })
-           
+
       } catch (err) {
         console.log(err)
       }
     }
     initCity()
 
-    document.querySelector('#submit').addEventListener('click', async function(){
-      let data = serialize(from,{hash:true})
+    document.querySelector('#submit').addEventListener('click', async function () {
+      let data = serialize(from, { hash: true })
       data.age = +data.age
       data.gender = +data.gender
       data.hope_salary = +data.hope_salary
       data.salary = +data.salary
       data.group = +data.group
 
-      if(modalBox.dataset.id === 'yc'){
-         await axios.post('/students',data)
-         renderList()
-         modal.hide()
+      if (modalBox.dataset.id === 'yc') {
+        await axios.post('/students', data)
+        renderList()
+        modal.hide()
       } else {
-
+        await axios.put(`/students/${modalBox.dataset.id}`, data)
+        renderList()
+        modal.hide()
       }
     })
 
